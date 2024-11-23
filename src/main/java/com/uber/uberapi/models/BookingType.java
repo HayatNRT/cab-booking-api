@@ -5,5 +5,6 @@ public enum BookingType {
     Rental,
     Sedan,
     Go,
-    Prime
+    Prime,
+    Bike
 }

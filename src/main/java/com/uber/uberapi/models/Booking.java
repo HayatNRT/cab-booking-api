@@ -1,10 +1,12 @@
 package com.uber.uberapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.uber.uberapi.exceptions.InvalidActionForBookingStateException;
 import com.uber.uberapi.exceptions.InvalidOTPException;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -18,14 +20,14 @@ import java.util.*;
         @Index(columnList = "passenger_id"),
         @Index(columnList = "driver_id"),
 })
-public class Booking extends Auditable {
+public class Booking extends Auditable implements Serializable {
     @ManyToOne
     private Passenger passenger;
-
+    @JsonIgnore
     @ManyToOne
     private Driver driver;
-
-    @ManyToMany(cascade = CascadeType.PERSIST)
+//    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.MERGE)
     private Set<Driver> notifiedDrivers = new HashSet<>(); // store which drivers can potentially accept this booking
 
     @Enumerated(value = EnumType.STRING)
@@ -33,16 +35,18 @@ public class Booking extends Auditable {
 
     @Enumerated(value = EnumType.STRING)
     private BookingStatus bookingStatus;
-
+    @JsonIgnore
     @OneToOne
     private Review reviewByPassenger;
+    @JsonIgnore
     @OneToOne
     private Review reviewByDriver;
 
     @OneToOne
+    @JsonIgnore
     private PaymentReceipt paymentReceipt; // todo: add payment services
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER )
     @JoinTable(
             name = "booking_route",
             joinColumns = @JoinColumn(name = "booking_id"),
@@ -53,8 +57,7 @@ public class Booking extends Auditable {
     private List<ExactLocation> route = new ArrayList<>();
     // every booking has a list of locations (route)
     // one to many mapping
-
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(
             name = "booking_completed_route",
             joinColumns = @JoinColumn(name = "booking_id"),
@@ -77,7 +80,7 @@ public class Booking extends Auditable {
     private Date expectedCompletionTime; // filled by the location Tracking service
 
     private Long totalDistanceMeters; // also be tracked by the location tracking service
-
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     private OTP rideStartOTP; // a cron job deleted otps of completed rides
 
@@ -113,6 +116,7 @@ public class Booking extends Auditable {
     public boolean needsDriver() {
         return bookingStatus.equals(BookingStatus.ASSIGNING_DRIVER);
     }
+
 
     public ExactLocation getPickupLocation() {
         return route.get(0);

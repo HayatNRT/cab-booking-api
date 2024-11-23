@@ -34,7 +34,7 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     ports:
-      - "2181:2181"
+      - "2182:2181"
 
   kafka:
     image: bitnami/kafka:latest
@@ -45,7 +45,7 @@ services:
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
       - ALLOW_PLAINTEXT_LISTENER=yes
     ports:
-      - "9092:9092"
+      - "9093:9092"
     depends_on:
      - zookeeper
 

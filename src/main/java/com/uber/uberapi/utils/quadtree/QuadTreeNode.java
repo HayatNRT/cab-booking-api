@@ -84,6 +84,7 @@ public class QuadTreeNode {
 
     /**
      * Creates a new node
+     *
      * @param latitude       node's Y start point
      * @param longitude      node's X start point
      * @param latitudeRange  node's height

@@ -10,7 +10,6 @@ import com.uber.uberapi.utils.quadtree.QuadTree;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -32,13 +31,13 @@ public class LocationTrackingService {
     QuadTree world = new QuadTree();
 
     public List<Driver> getDriversNearLocation(ExactLocation pickup) {
-        return world.findNeighboursIds(
-                        pickup.getLatitude(),
-                        pickup.getLongitude(),
-                        constants.getMaxDistanceKmForDriverMatching())
-                .stream()
+        var list = world.findNeighboursIds(pickup.getLatitude(),
+                pickup.getLongitude(),
+                constants.getMaxDistanceKmForDriverMatching());
+        return list.stream()
                 .map(driverId -> driverRepository.findById(driverId).orElseThrow())
                 .toList();
+
     }
 
     public void updateDriverLocation(Driver driver, ExactLocation location) {
@@ -48,13 +47,21 @@ public class LocationTrackingService {
         driverRepository.save(driver);
     }
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 10000)
+    //   @KafkaListener(topics = "#{constants.getLocationTrackingTopicName()}")
+
     public void consumer() {
-        MQMessage m = messageQueue.consumeMessage(constants.getDriverMatchingTopicName());
-        if (m == null)
+
+        //     MQMessage m = messageQueue.consumeMessage(constants.getDriverMatchingTopicName());
+      /*  if (m == null){
+            System.out.println("LocationTrackingService.consumer");
             return;
-        Message message = (Message) m;
-        updateDriverLocation(message.getDriver(), message.getLocation());
+        }
+        Message message = (Message) m;*/
+        for (Driver d : driverRepository.findAll()) {
+
+            updateDriverLocation(d, d.getLastKnownLocation());
+        }
     }
 
     @Data

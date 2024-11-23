@@ -30,13 +30,13 @@ public class SchedulingService {
 
     Set<Booking> scheduledBookings = new HashSet<>();
 
-    @Scheduled(fixedRate = 1000)
-    public void consumer() {
-        MQMessage m = messageQueue.consumeMessage(constants.getSchedulingTopicName());
-        if (m == null) return;
-        Message message = (Message) m;
-        schedule(message.getBooking());
-    }
+//    @Scheduled(fixedRate = 1000)
+//    public void consumer() {
+//        MQMessage m = messageQueue.consumeMessage(constants.getSchedulingTopicName());
+//        if (m == null) return;
+//        Message message = (Message) m;
+//        schedule(message.getBooking());
+//    }
 
     public void schedule(Booking booking) {
         scheduledBookings.add(booking);

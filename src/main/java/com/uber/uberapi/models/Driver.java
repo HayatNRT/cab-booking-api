@@ -56,7 +56,7 @@ public class Driver extends Auditable {
     @OneToMany(mappedBy = "driver")
     private List<Booking> bookings; // bookings that the driver actually drove
 
-    @ManyToMany(mappedBy = "notifiedDrivers", cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "notifiedDrivers", cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     private Set<Booking> acceptableBookings = new HashSet<>(); // bookings that the driver can currently accept
 
     @OneToOne

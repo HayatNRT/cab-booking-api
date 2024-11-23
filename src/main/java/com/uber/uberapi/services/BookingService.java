@@ -9,6 +9,7 @@ import com.uber.uberapi.services.drivermatching.DriverMatchingService;
 import com.uber.uberapi.services.messagequeue.MessageQueue;
 import com.uber.uberapi.services.notification.NotificationService;
 import com.uber.uberapi.services.otp.OTPService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,12 +35,13 @@ public class BookingService {
         } else {
             booking.setBookingStatus(BookingStatus.ASSIGNING_DRIVER);
             otpService.sendRideStartOTP(booking.getRideStartOTP());
-            messageQueue.sendMessage(constants.getDriverMatchingTopicName(), new DriverMatchingService.Message(booking));
+            messageQueue.sendMessage("driverMatchingTopic", new DriverMatchingService.Message(booking));
         }
         bookingRepository.save(booking);
         passengerRepository.save(booking.getPassenger());
     }
 
+    @Transactional
     public void acceptBooking(Driver driver, Booking booking) {
         if (!booking.needsDriver()) {
             return;
@@ -52,6 +54,7 @@ public class BookingService {
         driver.setActiveBooking(booking);
         booking.getNotifiedDrivers().clear();
         driver.getAcceptableBookings().clear();
+        booking.setBookingStatus(BookingStatus.ASSIGNING_DRIVER);
         notificationService.notify(booking.getPassenger().getPhoneNumber(), driver.getName() + " is arriving at pickup location");
         notificationService.notify(driver.getPhoneNumber(), "Booking accepted");
         bookingRepository.save(booking);

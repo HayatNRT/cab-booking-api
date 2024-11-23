@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-    environment {
-        mavenHome = tool 'jenkins-maven' // Maven tool name configured in Jenkins
-        PATH = "${mavenHome}/bin:${env.PATH}" // Add Maven to PATH
-    }
+   environment {
+          mavenHome = tool 'jenkins-maven' // Ensure this matches the configured Maven name
+          PATH = "${mavenHome}/bin:${env.PATH}" // Add Maven to PATH
+      }
 
     tools {
         jdk 'java-17' // JDK tool name configured in Jenkins

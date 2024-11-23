@@ -1,5 +1,6 @@
 package com.uber.uberapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "passenger")
 public class Passenger extends Auditable {
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     private Account account;
 
@@ -23,6 +25,7 @@ public class Passenger extends Auditable {
     @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "passenger")
     private List<Booking> bookings = new ArrayList<>();
 
@@ -34,13 +37,17 @@ public class Passenger extends Auditable {
 
     private String phoneNumber;
 
+    @JsonIgnore
     @OneToOne
     private ExactLocation home;
+    @JsonIgnore
     @OneToOne
     private ExactLocation work;
+    @JsonIgnore
     @OneToOne
     private ExactLocation lastKnownLocation;
 
+    @JsonIgnore
     @OneToOne
     private Review avgRating;
     // this is updated by a cron job that runs nightly
