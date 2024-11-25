@@ -1,4 +1,4 @@
-package com.uber.uberapi.security;
+package com.uber.uberapi.config;
 
 import com.uber.uberapi.models.Booking;
 import com.uber.uberapi.repositories.BookingRepository;

@@ -36,7 +36,7 @@ public class LocationTrackingService {
                 constants.getMaxDistanceKmForDriverMatching());
         return list.stream()
                 .map(driverId -> driverRepository.findById(driverId).orElseThrow())
-                .toList();
+                 .toList();
 
     }
 

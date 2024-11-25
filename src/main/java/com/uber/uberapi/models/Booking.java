@@ -26,7 +26,7 @@ public class Booking extends Auditable implements Serializable {
     @JsonIgnore
     @ManyToOne
     private Driver driver;
-//    @JsonIgnore
+    //    @JsonIgnore
     @ManyToMany(cascade = CascadeType.MERGE)
     private Set<Driver> notifiedDrivers = new HashSet<>(); // store which drivers can potentially accept this booking
 
@@ -46,7 +46,7 @@ public class Booking extends Auditable implements Serializable {
     @JsonIgnore
     private PaymentReceipt paymentReceipt; // todo: add payment services
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER )
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "booking_route",
             joinColumns = @JoinColumn(name = "booking_id"),
@@ -57,7 +57,7 @@ public class Booking extends Auditable implements Serializable {
     private List<ExactLocation> route = new ArrayList<>();
     // every booking has a list of locations (route)
     // one to many mapping
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "booking_completed_route",
             joinColumns = @JoinColumn(name = "booking_id"),
@@ -75,7 +75,7 @@ public class Booking extends Auditable implements Serializable {
 
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date endTime; // actual end time
-
+    @Transient
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date expectedCompletionTime; // filled by the location Tracking service
 
