@@ -6,7 +6,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,6 +14,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private ConcurrentHashMap<String, ConcurrentHashMap<String, WebSocketSession>> roomSessions = new ConcurrentHashMap<>();
+
+    public ConcurrentHashMap<String, WebSocketSession> getSessionsForBooking(String bookingId) {
+        return roomSessions.getOrDefault(bookingId, new ConcurrentHashMap<>());
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -26,21 +29,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    public void sendMessageToRoom(String bookingId, String message) {
-        if (roomSessions.containsKey(bookingId)) {
-            for (WebSocketSession session : roomSessions.get(bookingId).values()) {
-                try {
-                    if (session.isOpen()) {
-                        session.sendMessage(new TextMessage(message));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            System.out.println("No active WebSocket connections for booking ID: " + bookingId);
-        }
-    }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
