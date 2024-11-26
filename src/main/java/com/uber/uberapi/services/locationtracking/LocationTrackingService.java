@@ -10,6 +10,7 @@ import com.uber.uberapi.utils.quadtree.QuadTree;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ public class LocationTrackingService {
         var list = world.findNeighboursIds(pickup.getLatitude(),
                 pickup.getLongitude(),
                 constants.getMaxDistanceKmForDriverMatching());
+
         return list.stream()
                 .map(driverId -> driverRepository.findById(driverId).orElseThrow())
                  .toList();
@@ -47,12 +49,12 @@ public class LocationTrackingService {
         driverRepository.save(driver);
     }
 
-    @Scheduled(fixedRate = 10000)
-    //   @KafkaListener(topics = "#{constants.getLocationTrackingTopicName()}")
+    @Scheduled(fixedRate = 6000)
+      //@KafkaListener(topics = "#{constants.getLocationTrackingTopicName()}")
 
     public void consumer() {
 
-        //     MQMessage m = messageQueue.consumeMessage(constants.getDriverMatchingTopicName());
+           //  MQMessage m = messageQueue.consumeMessage(constants.getDriverMatchingTopicName());
       /*  if (m == null){
             System.out.println("LocationTrackingService.consumer");
             return;

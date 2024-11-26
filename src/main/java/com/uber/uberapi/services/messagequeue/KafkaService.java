@@ -24,6 +24,8 @@ public class KafkaService implements MessageQueue {
         kafkaTemplate.send(topic, message);
     }
 
+
+
 //    @Override
 //    public MQMessage consumeMessage(String topic) {
 //        MQMessage message = topics.getOrDefault(topic, new LinkedList<>()).poll();

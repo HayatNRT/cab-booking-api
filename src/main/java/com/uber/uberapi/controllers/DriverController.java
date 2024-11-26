@@ -1,5 +1,6 @@
 package com.uber.uberapi.controllers;
 
+import com.uber.uberapi.config.ChatWebSocketHandler;
 import com.uber.uberapi.dto.DriverRequest;
 import com.uber.uberapi.exceptions.InvalidBookingException;
 import com.uber.uberapi.exceptions.InvalidDriverException;
@@ -97,6 +98,7 @@ public class  DriverController {
                               @PathVariable(name = "bookingId") Long bookingId) {
         Driver driver = getDriverFromId(driverId);
         // driver can only see bookings that they're the driver for
+        String s = ChatWebSocketHandler.generateSessionId(String.valueOf(bookingId));
         Booking booking = getBookingFromId(bookingId);
         bookingService.acceptBooking(driver, booking);
     }

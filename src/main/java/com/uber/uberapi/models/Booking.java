@@ -23,7 +23,6 @@ import java.util.*;
 public class Booking extends Auditable implements Serializable {
     @ManyToOne
     private Passenger passenger;
-    @JsonIgnore
     @ManyToOne
     private Driver driver;
     //    @JsonIgnore
